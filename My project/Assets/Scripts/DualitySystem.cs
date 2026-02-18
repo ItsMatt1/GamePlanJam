@@ -34,12 +34,21 @@ public class DualitySystem : MonoBehaviour
     public float corruption = 0f;
     public int totalKills = 0;
 
+    [Header("Sprites")]
+    public Sprite angelSprite;
+    public Sprite devilSprite;
+
+    [Header("Audio")]
+    public AudioClip transformToDevilSound;
+    public AudioClip transformToAngelSound;
+
     [Header("Events")]
     public UnityEvent onTransformToDevil;
     public UnityEvent onTransformToAngel;
     public UnityEvent<float> onCorruptionChanged; // 0-1 normalized
 
     private SpriteRenderer spriteRenderer;
+    private AudioSource audioSource;
 
     // Accessors for other systems
     public float AttackSpeedMultiplier =>
@@ -63,6 +72,9 @@ public class DualitySystem : MonoBehaviour
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     void Update()
@@ -105,7 +117,14 @@ public class DualitySystem : MonoBehaviour
         currentForm = PlayerForm.Devil;
 
         if (spriteRenderer != null)
-            spriteRenderer.color = new Color(0.85f, 0.15f, 0.15f); // red tint
+        {
+            if (devilSprite != null)
+                spriteRenderer.sprite = devilSprite;
+            spriteRenderer.color = Color.white;
+        }
+
+        if (audioSource != null && transformToDevilSound != null)
+            audioSource.PlayOneShot(transformToDevilSound);
 
         onTransformToDevil?.Invoke();
     }
@@ -117,7 +136,14 @@ public class DualitySystem : MonoBehaviour
         onCorruptionChanged?.Invoke(0f);
 
         if (spriteRenderer != null)
+        {
+            if (angelSprite != null)
+                spriteRenderer.sprite = angelSprite;
             spriteRenderer.color = Color.white;
+        }
+
+        if (audioSource != null && transformToAngelSound != null)
+            audioSource.PlayOneShot(transformToAngelSound);
 
         onTransformToAngel?.Invoke();
     }

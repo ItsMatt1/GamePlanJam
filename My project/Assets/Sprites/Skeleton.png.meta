@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: fefb3891d65b96d41a20b08c9cae6274
+guid: 197318a5583b01c409265e645e2048ec
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 72518531857308253
-    second: Tenshi_Idle_0
-  - first:
-      213: 4568472874553420623
-    second: Tenshi_Idle_1
+      213: 4354231566380549168
+    second: Skeleton_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -90,7 +87,7 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 12
+    textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -129,45 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Tenshi_Idle_0
+      name: Skeleton_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 0
-        width: 64
-        height: 64
+        width: 14
+        height: 16
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d5adcf27833a10100800000000000000
-      internalID: 72518531857308253
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tenshi_Idle_1
-      rect:
-        serializedVersion: 2
-        x: 14
-        y: 34
-        width: 20
-        height: 9
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f4ba3c5efd9766f30800000000000000
-      internalID: 4568472874553420623
+      spriteID: 034c7e73a865d6c30800000000000000
+      internalID: 4354231566380549168
       vertices: []
       indices: 
       edges: []
@@ -176,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 24bda65c37eb1cd44a27a6d0276e718d
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -186,8 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Tenshi_Idle_0: 72518531857308253
-      Tenshi_Idle_1: 4568472874553420623
+      Skeleton_0: 4354231566380549168
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
