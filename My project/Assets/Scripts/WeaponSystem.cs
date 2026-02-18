@@ -2,22 +2,23 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Auto-targets the enemy closest to the mouse cursor and fires projectiles.
-/// Switches between Angel (Holy Spear) and Devil (Hellfire Bolt) weapons.
+/// Angel form: auto-shoots Holy Spears at the enemy closest to the mouse.
+/// Devil form: swings a Katana slash arc toward the enemy closest to the mouse.
 /// </summary>
 public class WeaponSystem : MonoBehaviour
 {
-    [Header("Angel Weapon – Holy Spear")]
+    [Header("Angel Weapon – Holy Spear (ranged)")]
     public GameObject spearPrefab;
     public float spearFireRate = 0.45f;
     public float spearDamage = 12f;
     public float spearSpeed = 14f;
 
-    [Header("Devil Weapon – Hellfire Bolt")]
-    public GameObject hellfirePrefab;
-    public float hellfireFireRate = 0.18f;
-    public float hellfireDamage = 9f;
-    public float hellfireSpeed = 20f;
+    [Header("Devil Weapon – Katana (melee)")]
+    public GameObject katanaSlashPrefab;
+    public float katanaSwingRate = 0.22f;
+    public float katanaDamage = 18f;
+    public float katanaRange = 2.5f;
+    public float katanaArc = 120f; // sweep angle in degrees
 
     [Header("Targeting")]
     public float targetRange = 18f;
@@ -36,14 +37,22 @@ public class WeaponSystem : MonoBehaviour
 
         if (fireTimer <= 0f)
         {
-            Enemy target = FindTargetNearMouse();
-            if (target != null)
-            {
-                Shoot(target);
+            bool isDevil = dualitySystem.currentForm == PlayerForm.Devil;
 
-                bool isDevil = dualitySystem.currentForm == PlayerForm.Devil;
-                float baseRate = isDevil ? hellfireFireRate : spearFireRate;
-                fireTimer = baseRate / dualitySystem.AttackSpeedMultiplier;
+            if (isDevil)
+            {
+                // Katana swings toward mouse direction even without a target
+                SwingKatana();
+                fireTimer = katanaSwingRate / dualitySystem.AttackSpeedMultiplier;
+            }
+            else
+            {
+                Enemy target = FindTargetNearMouse();
+                if (target != null)
+                {
+                    ShootSpear(target);
+                    fireTimer = spearFireRate / dualitySystem.AttackSpeedMultiplier;
+                }
             }
         }
     }
@@ -81,25 +90,49 @@ public class WeaponSystem : MonoBehaviour
         return closest;
     }
 
-    void Shoot(Enemy target)
+    Vector2 GetMouseWorldDirection()
     {
-        bool isDevil = dualitySystem.currentForm == PlayerForm.Devil;
+        var mouse = Mouse.current;
+        if (mouse == null) return Vector2.right;
 
-        GameObject prefab = isDevil ? hellfirePrefab : spearPrefab;
-        float damage = isDevil ? hellfireDamage : spearDamage;
-        float speed = isDevil ? hellfireSpeed : spearSpeed;
+        Vector2 mouseScreen = mouse.position.ReadValue();
+        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(
+            new Vector3(mouseScreen.x, mouseScreen.y, 0f));
 
-        if (prefab == null) return;
+        Vector2 dir = ((Vector2)mouseWorld - (Vector2)transform.position).normalized;
+        return dir == Vector2.zero ? Vector2.right : dir;
+    }
+
+    void ShootSpear(Enemy target)
+    {
+        if (spearPrefab == null) return;
 
         Vector2 direction = ((Vector2)target.transform.position - (Vector2)transform.position).normalized;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        GameObject proj = Instantiate(prefab, transform.position, Quaternion.Euler(0, 0, angle));
+        GameObject proj = Instantiate(spearPrefab, transform.position, Quaternion.Euler(0, 0, angle));
         Projectile projectile = proj.GetComponent<Projectile>();
 
         if (projectile != null)
+            projectile.Initialize(direction, spearSpeed, spearDamage * dualitySystem.DamageMultiplier);
+    }
+
+    void SwingKatana()
+    {
+        if (katanaSlashPrefab == null) return;
+
+        Vector2 swingDir = GetMouseWorldDirection();
+        float angle = Mathf.Atan2(swingDir.y, swingDir.x) * Mathf.Rad2Deg;
+
+        // Spawn the slash slightly in front of the player
+        Vector3 spawnPos = transform.position + (Vector3)(swingDir * katanaRange * 0.4f);
+        GameObject slash = Instantiate(katanaSlashPrefab, spawnPos, Quaternion.Euler(0, 0, angle));
+
+        KatanaSlash slashScript = slash.GetComponent<KatanaSlash>();
+        if (slashScript != null)
         {
-            projectile.Initialize(direction, speed, damage * dualitySystem.DamageMultiplier);
+            float finalDamage = katanaDamage * dualitySystem.DamageMultiplier;
+            slashScript.Initialize(transform, swingDir, katanaRange, katanaArc, finalDamage);
         }
     }
 }
