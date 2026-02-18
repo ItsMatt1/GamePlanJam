@@ -696,7 +696,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64c4a7d9dc8e4c8498aa7473aec167e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DualitySystem
-  maxCorruption: 10
+  maxCorruption: 5
   corruptionPerKill: 8
   purificationRate: 4
   devilAttackSpeedMultiplier: 2
@@ -711,8 +711,8 @@ MonoBehaviour:
   totalKills: 0
   angelSprite: {fileID: 72518531857308253, guid: fefb3891d65b96d41a20b08c9cae6274, type: 3}
   devilSprite: {fileID: -8569960072745231455, guid: bfd0f9637c712ba4bbbb61c2852d7345, type: 3}
-  transformToDevilSound: {fileID: 0}
-  transformToAngelSound: {fileID: 0}
+  transformToDevilSound: {fileID: 8300000, guid: bf5ff09ee47b1c447ac6b1ea3a56536f, type: 3}
+  transformToAngelSound: {fileID: 8300000, guid: a6bad8ac8b4d6b04989768d610450531, type: 3}
   onTransformToDevil:
     m_PersistentCalls:
       m_Calls: []
