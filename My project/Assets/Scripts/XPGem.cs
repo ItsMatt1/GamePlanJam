@@ -50,6 +50,9 @@ public class XPGem : MonoBehaviour
         if (health != null)
             health.Heal(healAmount);
 
+        if (GameManager.Instance != null)
+            GameManager.Instance.AddGemScore();
+
         Destroy(gameObject);
     }
 }

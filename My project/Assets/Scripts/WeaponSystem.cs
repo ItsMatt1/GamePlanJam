@@ -12,6 +12,7 @@ public class WeaponSystem : MonoBehaviour
     public float spearFireRate = 0.45f;
     public float spearDamage = 12f;
     public float spearSpeed = 14f;
+    public AudioClip spearSound;
 
     [Header("Devil Weapon – Katana (melee)")]
     public GameObject katanaSlashPrefab;
@@ -19,16 +20,21 @@ public class WeaponSystem : MonoBehaviour
     public float katanaDamage = 18f;
     public float katanaRange = 2.5f;
     public float katanaArc = 120f; // sweep angle in degrees
+    public AudioClip katanaSound;
 
     [Header("Targeting")]
     public float targetRange = 18f;
 
     private float fireTimer;
     private DualitySystem dualitySystem;
+    private AudioSource audioSource;
 
     void Awake()
     {
         dualitySystem = GetComponent<DualitySystem>();
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     void Update()
@@ -115,6 +121,9 @@ public class WeaponSystem : MonoBehaviour
 
         if (projectile != null)
             projectile.Initialize(direction, spearSpeed, spearDamage * dualitySystem.DamageMultiplier);
+
+        if (audioSource != null && spearSound != null)
+            audioSource.PlayOneShot(spearSound);
     }
 
     void SwingKatana()
@@ -134,5 +143,8 @@ public class WeaponSystem : MonoBehaviour
             float finalDamage = katanaDamage * dualitySystem.DamageMultiplier;
             slashScript.Initialize(transform, swingDir, katanaRange, katanaArc, finalDamage);
         }
+
+        if (audioSource != null && katanaSound != null)
+            audioSource.PlayOneShot(katanaSound);
     }
 }

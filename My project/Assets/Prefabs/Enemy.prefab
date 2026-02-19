@@ -173,5 +173,5 @@ MonoBehaviour:
   moveSpeed: 2.5
   contactDamage: 8
   contactCooldown: 0.8
-  xpGemPrefab: {fileID: 0}
+  xpGemPrefab: {fileID: 4484020809691794197, guid: 25f248df3b7b3e941ab2efe02e3a639c, type: 3}
   isDead: 0

@@ -15,10 +15,14 @@ public enum PlayerForm
 /// </summary>
 public class DualitySystem : MonoBehaviour
 {
-    [Header("Corruption")]
-    public float maxCorruption = 100f;
+    [Header("Angel Phase – building corruption")]
+    public float corruptionToTransform = 150f;
     public float corruptionPerKill = 8f;
-    public float purificationRate = 4f; // corruption drain per second in devil form
+
+    [Header("Devil Phase – corruption draining")]
+    public float devilMaxCorruption = 60f;
+    public float purificationRate = 8f;
+    public float devilCorruptionPerKill = 2f;
 
     [Header("Devil Form Modifiers")]
     public float devilAttackSpeedMultiplier = 2.0f;
@@ -77,12 +81,16 @@ public class DualitySystem : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
     }
 
+    /// <summary>Returns the max value for the current phase (used for UI normalization).</summary>
+    public float CurrentMaxCorruption =>
+        currentForm == PlayerForm.Angel ? corruptionToTransform : devilMaxCorruption;
+
     void Update()
     {
         if (currentForm == PlayerForm.Devil)
         {
             corruption -= purificationRate * Time.deltaTime;
-            onCorruptionChanged?.Invoke(corruption / maxCorruption);
+            onCorruptionChanged?.Invoke(corruption / devilMaxCorruption);
 
             if (corruption <= 0f)
             {
@@ -99,22 +107,22 @@ public class DualitySystem : MonoBehaviour
         if (currentForm == PlayerForm.Angel)
         {
             corruption += corruptionPerKill;
-            onCorruptionChanged?.Invoke(corruption / maxCorruption);
+            onCorruptionChanged?.Invoke(corruption / corruptionToTransform);
 
-            if (corruption >= maxCorruption)
+            if (corruption >= corruptionToTransform)
                 TransformToDevil();
         }
         else
         {
-            // Kills in devil form slow the revert by adding a fraction back
-            corruption = Mathf.Min(corruption + corruptionPerKill * 0.25f, maxCorruption);
-            onCorruptionChanged?.Invoke(corruption / maxCorruption);
+            corruption = Mathf.Min(corruption + devilCorruptionPerKill, devilMaxCorruption);
+            onCorruptionChanged?.Invoke(corruption / devilMaxCorruption);
         }
     }
 
     void TransformToDevil()
     {
         currentForm = PlayerForm.Devil;
+        corruption = devilMaxCorruption; // start full, drains down to 0
 
         if (spriteRenderer != null)
         {
