@@ -18,6 +18,7 @@ public class PlayerHealth : MonoBehaviour
     public UnityEvent onPlayerDeath;
 
     private float iFrameTimer;
+    private bool isDead;
     private DualitySystem dualitySystem;
     private SpriteRenderer spriteRenderer;
 
@@ -30,6 +31,8 @@ public class PlayerHealth : MonoBehaviour
 
     void Update()
     {
+        if (isDead) return;
+
         // Angel form passive regeneration
         if (dualitySystem != null && dualitySystem.currentForm == PlayerForm.Angel)
         {
@@ -55,7 +58,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if (iFrameTimer > 0f) return;
+        if (isDead || iFrameTimer > 0f) return;
 
         currentHealth -= damage;
         iFrameTimer = iFrameDuration;
@@ -64,12 +67,15 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth <= 0f)
         {
             currentHealth = 0f;
+            isDead = true;
+            spriteRenderer.enabled = true;
             onPlayerDeath?.Invoke();
         }
     }
 
     public void Heal(float amount)
     {
+        if (isDead) return;
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
         onHealthChanged?.Invoke(currentHealth / maxHealth);
     }

@@ -46,9 +46,13 @@ public class PlayerController : MonoBehaviour
     {
         float speed = baseSpeed;
 
-        // Devil form slight speed boost
-        if (dualitySystem != null && dualitySystem.currentForm == PlayerForm.Devil)
-            speed *= 1.15f;
+        if (dualitySystem != null)
+        {
+            if (dualitySystem.currentForm == PlayerForm.Devil)
+                speed *= dualitySystem.devilMoveSpeedMultiplier;
+            else
+                speed *= dualitySystem.angelMoveSpeedMultiplier;
+        }
 
         rb.linearVelocity = moveInput * speed;
     }

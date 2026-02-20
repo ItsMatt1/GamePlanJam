@@ -9,10 +9,10 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
     [Header("Health Bar")]
-    public Image healthBarFill;
+    public RectTransform healthBarFill;
 
     [Header("Corruption Bar")]
-    public Image corruptionBarFill;
+    public RectTransform corruptionBarFill;
     public Color angelCorruptionColor = new Color(0.55f, 0.15f, 0.85f);
     public Color devilCorruptionColor = new Color(1f, 0.35f, 0f);
 
@@ -24,6 +24,7 @@ public class UIManager : MonoBehaviour
     [Header("Stats")]
     public TextMeshProUGUI killCountText;
     public TextMeshProUGUI timerText;
+    public TextMeshProUGUI scoreText;
 
     [Header("References – drag from scene")]
     public DualitySystem dualitySystem;
@@ -52,25 +53,31 @@ public class UIManager : MonoBehaviour
         if (dualitySystem != null && killCountText != null)
             killCountText.text = $"Kills: {dualitySystem.totalKills}";
 
-        if (GameManager.Instance != null && timerText != null)
+        if (GameManager.Instance != null)
         {
-            float t = GameManager.Instance.gameTime;
-            int min = Mathf.FloorToInt(t / 60f);
-            int sec = Mathf.FloorToInt(t % 60f);
-            timerText.text = $"{min:00}:{sec:00}";
+            if (timerText != null)
+            {
+                float t = GameManager.Instance.gameTime;
+                int min = Mathf.FloorToInt(t / 60f);
+                int sec = Mathf.FloorToInt(t % 60f);
+                timerText.text = $"{min:00}:{sec:00}";
+            }
+
+            if (scoreText != null)
+                scoreText.text = $"Score: {GameManager.Instance.score}";
         }
     }
 
     void UpdateHealthBar(float normalized)
     {
         if (healthBarFill != null)
-            healthBarFill.fillAmount = normalized;
+            healthBarFill.anchorMax = new Vector2(Mathf.Clamp01(normalized), healthBarFill.anchorMax.y);
     }
 
     void UpdateCorruptionBar(float normalized)
     {
         if (corruptionBarFill != null)
-            corruptionBarFill.fillAmount = normalized;
+            corruptionBarFill.anchorMax = new Vector2(Mathf.Clamp01(normalized), corruptionBarFill.anchorMax.y);
     }
 
     void OnDevilForm()
@@ -82,7 +89,7 @@ public class UIManager : MonoBehaviour
         }
 
         if (corruptionBarFill != null)
-            corruptionBarFill.color = devilCorruptionColor;
+            corruptionBarFill.GetComponent<Image>().color = devilCorruptionColor;
     }
 
     void OnAngelForm()
@@ -94,6 +101,6 @@ public class UIManager : MonoBehaviour
         }
 
         if (corruptionBarFill != null)
-            corruptionBarFill.color = angelCorruptionColor;
+            corruptionBarFill.GetComponent<Image>().color = angelCorruptionColor;
     }
 }

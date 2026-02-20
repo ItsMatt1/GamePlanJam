@@ -15,15 +15,21 @@ public enum PlayerForm
 /// </summary>
 public class DualitySystem : MonoBehaviour
 {
-    [Header("Corruption")]
-    public float maxCorruption = 100f;
+    [Header("Angel Phase – building corruption")]
+    public float corruptionToTransform = 150f;
     public float corruptionPerKill = 8f;
-    public float purificationRate = 4f; // corruption drain per second in devil form
+
+    [Header("Devil Phase – corruption draining")]
+    public float devilMaxCorruption = 60f;
+    public float purificationRate = 8f;
+    public float devilCorruptionPerKill = 2f;
 
     [Header("Devil Form Modifiers")]
     public float devilAttackSpeedMultiplier = 2.0f;
     public float devilDamageMultiplier = 1.5f;
     public float devilMoveSpeedMultiplier = 1.15f;
+    [Tooltip("Movement speed multiplier while in Angel form (slight boost).")]
+    public float angelMoveSpeedMultiplier = 1.10f;
     public float devilEnemyHealthMultiplier = 1.6f;
     public float devilEnemySpeedMultiplier = 1.4f;
     public float devilEnemySpawnRateMultiplier = 1.6f;
@@ -34,12 +40,21 @@ public class DualitySystem : MonoBehaviour
     public float corruption = 0f;
     public int totalKills = 0;
 
+    [Header("Sprites")]
+    public Sprite angelSprite;
+    public Sprite devilSprite;
+
+    [Header("Audio")]
+    public AudioClip transformToDevilSound;
+    public AudioClip transformToAngelSound;
+
     [Header("Events")]
     public UnityEvent onTransformToDevil;
     public UnityEvent onTransformToAngel;
     public UnityEvent<float> onCorruptionChanged; // 0-1 normalized
 
     private SpriteRenderer spriteRenderer;
+    private AudioSource audioSource;
 
     // Accessors for other systems
     public float AttackSpeedMultiplier =>
@@ -63,14 +78,21 @@ public class DualitySystem : MonoBehaviour
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
     }
+
+    /// <summary>Returns the max value for the current phase (used for UI normalization).</summary>
+    public float CurrentMaxCorruption =>
+        currentForm == PlayerForm.Angel ? corruptionToTransform : devilMaxCorruption;
 
     void Update()
     {
         if (currentForm == PlayerForm.Devil)
         {
             corruption -= purificationRate * Time.deltaTime;
-            onCorruptionChanged?.Invoke(corruption / maxCorruption);
+            onCorruptionChanged?.Invoke(corruption / devilMaxCorruption);
 
             if (corruption <= 0f)
             {
@@ -87,25 +109,32 @@ public class DualitySystem : MonoBehaviour
         if (currentForm == PlayerForm.Angel)
         {
             corruption += corruptionPerKill;
-            onCorruptionChanged?.Invoke(corruption / maxCorruption);
+            onCorruptionChanged?.Invoke(corruption / corruptionToTransform);
 
-            if (corruption >= maxCorruption)
+            if (corruption >= corruptionToTransform)
                 TransformToDevil();
         }
         else
         {
-            // Kills in devil form slow the revert by adding a fraction back
-            corruption = Mathf.Min(corruption + corruptionPerKill * 0.25f, maxCorruption);
-            onCorruptionChanged?.Invoke(corruption / maxCorruption);
+            corruption = Mathf.Min(corruption + devilCorruptionPerKill, devilMaxCorruption);
+            onCorruptionChanged?.Invoke(corruption / devilMaxCorruption);
         }
     }
 
     void TransformToDevil()
     {
         currentForm = PlayerForm.Devil;
+        corruption = devilMaxCorruption; // start full, drains down to 0
 
         if (spriteRenderer != null)
-            spriteRenderer.color = new Color(0.85f, 0.15f, 0.15f); // red tint
+        {
+            if (devilSprite != null)
+                spriteRenderer.sprite = devilSprite;
+            spriteRenderer.color = Color.white;
+        }
+
+        if (audioSource != null && transformToDevilSound != null)
+            audioSource.PlayOneShot(transformToDevilSound);
 
         onTransformToDevil?.Invoke();
     }
@@ -117,7 +146,14 @@ public class DualitySystem : MonoBehaviour
         onCorruptionChanged?.Invoke(0f);
 
         if (spriteRenderer != null)
+        {
+            if (angelSprite != null)
+                spriteRenderer.sprite = angelSprite;
             spriteRenderer.color = Color.white;
+        }
+
+        if (audioSource != null && transformToAngelSound != null)
+            audioSource.PlayOneShot(transformToAngelSound);
 
         onTransformToAngel?.Invoke();
     }

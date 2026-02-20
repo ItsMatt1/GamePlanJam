@@ -6,8 +6,18 @@ using UnityEngine;
 /// </summary>
 public class EnemySpawner : MonoBehaviour
 {
-    [Header("Prefabs")]
-    public GameObject[] enemyPrefabs;
+    [System.Serializable]
+    public class SpawnEntry
+    {
+        public GameObject prefab;
+        [Tooltip("Earliest time (seconds) since round start when this prefab becomes eligible to spawn.")]
+        public float earliestSpawnTime = 0f;
+        [Tooltip("Relative weight when picking among eligible prefabs.")]
+        public float weight = 1f;
+    }
+
+    [Header("Prefabs (with timing)")]
+    public SpawnEntry[] spawnTable;
 
     [Header("Spawning")]
     public float baseSpawnInterval = 1.8f;
@@ -60,13 +70,41 @@ public class EnemySpawner : MonoBehaviour
 
     void SpawnEnemy()
     {
-        if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
+        if (spawnTable == null || spawnTable.Length == 0) return;
+
+        // Calculate total weight of eligible entries
+        float totalWeight = 0f;
+        for (int i = 0; i < spawnTable.Length; i++)
+        {
+            var e = spawnTable[i];
+            if (e != null && e.prefab != null && elapsedTime >= e.earliestSpawnTime)
+                totalWeight += Mathf.Max(0f, e.weight);
+        }
+
+        if (totalWeight <= 0f) return; // nothing eligible yet
+
+        // Pick a weighted random entry
+        float pick = Random.Range(0f, totalWeight);
+        float cursor = 0f;
+        GameObject chosen = null;
+        for (int i = 0; i < spawnTable.Length; i++)
+        {
+            var e = spawnTable[i];
+            if (e == null || e.prefab == null || elapsedTime < e.earliestSpawnTime) continue;
+            cursor += Mathf.Max(0f, e.weight);
+            if (pick <= cursor)
+            {
+                chosen = e.prefab;
+                break;
+            }
+        }
+
+        if (chosen == null) return;
 
         float angle = Random.Range(0f, Mathf.PI * 2f);
         Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * spawnDistance;
         Vector2 pos = (Vector2)player.position + offset;
 
-        int index = Random.Range(0, enemyPrefabs.Length);
-        Instantiate(enemyPrefabs[index], pos, Quaternion.identity);
+        Instantiate(chosen, pos, Quaternion.identity);
     }
 }

@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
         transform.position += (Vector3)(direction * moveSpeed * Time.deltaTime);
 
         if (spriteRenderer != null)
-            spriteRenderer.flipX = direction.x < 0;
+            spriteRenderer.flipX = direction.x > 0;
 
         contactTimer -= Time.deltaTime;
     }
@@ -83,6 +83,9 @@ public class Enemy : MonoBehaviour
 
         if (dualitySystem != null)
             dualitySystem.RegisterKill();
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.AddKillScore();
 
         if (xpGemPrefab != null)
             Instantiate(xpGemPrefab, transform.position, Quaternion.identity);
