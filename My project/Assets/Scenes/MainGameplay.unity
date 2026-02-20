@@ -275,6 +275,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &308306717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 308306719}
+  - component: {fileID: 308306718}
+  m_Layer: 0
+  m_Name: MusicPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &308306718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 308306717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9ad7e5739516414ca6a8c5ff0c4f364, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MusicPlayer
+  musicClip: {fileID: 8300000, guid: af5d33dc2ced96143b44eda818ed6075, type: 3}
+  volume: 0.5
+--- !u!4 &308306719
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 308306717}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 995.1594, y: 582.1103, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &345827692
 GameObject:
   m_ObjectHideFlags: 0
@@ -464,8 +510,8 @@ MonoBehaviour:
   devilFlashColor: {r: 1, g: 0.1, b: 0.05, a: 0.7}
   angelFlashColor: {r: 1, g: 1, b: 0.7, a: 0.6}
   flashDuration: 0.4
-  shakeDuration: 0.3
-  shakeIntensity: 0.25
+  zoomPunchDuration: 0.3
+  zoomPunchAmount: 1.2
   playerTransform: {fileID: 1847041861}
   pulseScale: 1.4
   pulseDuration: 0.25
@@ -993,7 +1039,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7.5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1204,8 +1250,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48ea25f320caf6c47878598d9b05b8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyPrefabs:
-  - {fileID: 4008669310557599465, guid: 27d3f64aaabb2754a8e6ab00e49f1f87, type: 3}
+  spawnTable:
+  - prefab: {fileID: 4008669310557599465, guid: 27d3f64aaabb2754a8e6ab00e49f1f87, type: 3}
+    earliestSpawnTime: 0
+    weight: 3
+  - prefab: {fileID: 4008669310557599465, guid: 69347ca0efc6c9b41a1e816f44ef57e9, type: 3}
+    earliestSpawnTime: 25
+    weight: 1
+  - prefab: {fileID: 4008669310557599465, guid: 311edd15f36e1b340a958da0684f9b06, type: 3}
+    earliestSpawnTime: 35
+    weight: 1
+  - prefab: {fileID: 4008669310557599465, guid: 5e4e4dd1b233fc74295c3984c15e0cb4, type: 3}
+    earliestSpawnTime: 55
+    weight: 1
   baseSpawnInterval: 0.2
   minSpawnInterval: 0.25
   spawnDistance: 14
@@ -1261,7 +1318,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -174}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 286.3457, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1422410064
 MonoBehaviour:
@@ -1349,7 +1406,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -53.684853, w: 0}
+  m_margin: {x: 0, y: 0, z: -1.8774796, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1552,7 +1609,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 113}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 385.63, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1569538040
 MonoBehaviour:
@@ -1640,7 +1697,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -134.44653, y: 0, z: -84.29736, w: 0}
+  m_margin: {x: -0.42999268, y: 0, z: -2.268921, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1764,7 +1821,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 285}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 327.36, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1678900279
 MonoBehaviour:
@@ -1852,7 +1909,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -84.29736, w: 0}
+  m_margin: {x: 0, y: 0, z: -2.269165, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2095,7 +2152,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 60
-    OrthographicSize: 7.5
+    OrthographicSize: 6
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -2162,8 +2219,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -54, y: 206}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 0, y: 206}
+  m_SizeDelta: {x: 454.7195, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1846192756
 MonoBehaviour:
@@ -2251,7 +2308,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -217.98555, w: 0}
+  m_margin: {x: 0, y: 0, z: 2.1954803, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2302,7 +2359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
   currentHealth: 0
-  angelRegenRate: 1
+  angelRegenRate: 2
   iFrameDuration: 0.6
   onHealthChanged:
     m_PersistentCalls:
@@ -2336,16 +2393,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSystem
   spearPrefab: {fileID: 7106594501563545678, guid: dd85c36b67a663a42b9550318e8be706, type: 3}
   spearFireRate: 1
-  spearDamage: 12
+  spearDamage: 20
   spearSpeed: 6
   spearSound: {fileID: 8300000, guid: 7951afd6c00a0e14ba3530b4dc7d20a0, type: 3}
   katanaSlashPrefab: {fileID: 207125534744296684, guid: ff31d51f777adaa47adaf34a109e25b4, type: 3}
   katanaSwingRate: 0.22
-  katanaDamage: 18
+  katanaDamage: 22
   katanaRange: 2.5
   katanaArc: 120
-  katanaSound: {fileID: 0}
+  katanaSound: {fileID: 8300000, guid: 4b77cfe0aa6d0254a98c2e6d8188d0b1, type: 3}
   targetRange: 18
+  katanaSoundCooldown: 0.4
 --- !u!114 &1847041856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2614,7 +2672,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2726,8 +2784,8 @@ RectTransform:
   m_Children:
   - {fileID: 1422410063}
   - {fileID: 1678900278}
-  - {fileID: 1569538039}
   - {fileID: 1846192755}
+  - {fileID: 1569538039}
   - {fileID: 2074586407}
   - {fileID: 2145208723}
   m_Father: {fileID: 1884048276}
@@ -3105,3 +3163,4 @@ SceneRoots:
   - {fileID: 1787173859}
   - {fileID: 1884048276}
   - {fileID: 1458550961}
+  - {fileID: 308306719}

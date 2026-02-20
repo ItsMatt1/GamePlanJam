@@ -9,6 +9,7 @@ public class MainMenuManager : MonoBehaviour
     [Header("Panels")]
     public GameObject menuPanel;
     public GameObject quotePanel;
+    public GameObject howToPlayPanel;
 
     [Header("Quote")]
     public TextMeshProUGUI quoteText;
@@ -28,6 +29,18 @@ public class MainMenuManager : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void ShowHowToPlay()
+    {
+        if (menuPanel != null) menuPanel.SetActive(false);
+        if (howToPlayPanel != null) howToPlayPanel.SetActive(true);
+    }
+
+    public void BackToMenu()
+    {
+        if (howToPlayPanel != null) howToPlayPanel.SetActive(false);
+        if (menuPanel != null) menuPanel.SetActive(true);
     }
 
     IEnumerator PlaySequence()

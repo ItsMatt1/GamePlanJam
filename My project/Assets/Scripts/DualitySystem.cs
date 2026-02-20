@@ -28,6 +28,8 @@ public class DualitySystem : MonoBehaviour
     public float devilAttackSpeedMultiplier = 2.0f;
     public float devilDamageMultiplier = 1.5f;
     public float devilMoveSpeedMultiplier = 1.15f;
+    [Tooltip("Movement speed multiplier while in Angel form (slight boost).")]
+    public float angelMoveSpeedMultiplier = 1.10f;
     public float devilEnemyHealthMultiplier = 1.6f;
     public float devilEnemySpeedMultiplier = 1.4f;
     public float devilEnemySpawnRateMultiplier = 1.6f;

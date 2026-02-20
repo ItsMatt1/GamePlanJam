@@ -25,7 +25,11 @@ public class WeaponSystem : MonoBehaviour
     [Header("Targeting")]
     public float targetRange = 18f;
 
+    [Header("Audio")]
+    public float katanaSoundCooldown = 0.3f;
+
     private float fireTimer;
+    private float katanaSoundTimer;
     private DualitySystem dualitySystem;
     private AudioSource audioSource;
 
@@ -40,6 +44,7 @@ public class WeaponSystem : MonoBehaviour
     void Update()
     {
         fireTimer -= Time.deltaTime;
+        katanaSoundTimer -= Time.deltaTime;
 
         if (fireTimer <= 0f)
         {
@@ -144,7 +149,10 @@ public class WeaponSystem : MonoBehaviour
             slashScript.Initialize(transform, swingDir, katanaRange, katanaArc, finalDamage);
         }
 
-        if (audioSource != null && katanaSound != null)
+        if (audioSource != null && katanaSound != null && katanaSoundTimer <= 0f)
+        {
             audioSource.PlayOneShot(katanaSound);
+            katanaSoundTimer = katanaSoundCooldown;
+        }
     }
 }

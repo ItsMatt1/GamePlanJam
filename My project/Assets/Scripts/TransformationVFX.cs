@@ -15,9 +15,9 @@ public class TransformationVFX : MonoBehaviour
     public Color angelFlashColor = new Color(1f, 1f, 0.7f, 0.6f);
     public float flashDuration = 0.4f;
 
-    [Header("Camera Shake")]
-    public float shakeDuration = 0.3f;
-    public float shakeIntensity = 0.25f;
+    [Header("Camera Zoom Punch")]
+    public float zoomPunchDuration = 0.3f;
+    public float zoomPunchAmount = 1.2f;
 
     [Header("Player Pulse")]
     public Transform playerTransform;
@@ -25,16 +25,16 @@ public class TransformationVFX : MonoBehaviour
     public float pulseDuration = 0.25f;
 
     private Camera cam;
-    private Vector3 originalCamLocalPos;
+    private float originalOrthoSize;
     private Coroutine flashRoutine;
-    private Coroutine shakeRoutine;
+    private Coroutine zoomRoutine;
     private Coroutine pulseRoutine;
 
     void Start()
     {
         cam = Camera.main;
         if (cam != null)
-            originalCamLocalPos = cam.transform.localPosition;
+            originalOrthoSize = cam.orthographicSize;
 
         if (flashOverlay != null)
         {
@@ -46,14 +46,14 @@ public class TransformationVFX : MonoBehaviour
     public void TriggerDevilVFX()
     {
         PlayFlash(devilFlashColor);
-        PlayShake();
+        PlayZoomPunch();
         PlayPulse();
     }
 
     public void TriggerAngelVFX()
     {
         PlayFlash(angelFlashColor);
-        PlayShake();
+        PlayZoomPunch();
         PlayPulse();
     }
 
@@ -64,11 +64,11 @@ public class TransformationVFX : MonoBehaviour
         flashRoutine = StartCoroutine(FlashRoutine(color));
     }
 
-    void PlayShake()
+    void PlayZoomPunch()
     {
         if (cam == null) return;
-        if (shakeRoutine != null) StopCoroutine(shakeRoutine);
-        shakeRoutine = StartCoroutine(ShakeRoutine());
+        if (zoomRoutine != null) StopCoroutine(zoomRoutine);
+        zoomRoutine = StartCoroutine(ZoomPunchRoutine());
     }
 
     void PlayPulse()
@@ -96,20 +96,33 @@ public class TransformationVFX : MonoBehaviour
         flashOverlay.color = Color.clear;
     }
 
-    IEnumerator ShakeRoutine()
+    IEnumerator ZoomPunchRoutine()
     {
+        float zoomedSize = originalOrthoSize / zoomPunchAmount;
         float elapsed = 0f;
+        float half = zoomPunchDuration * 0.3f;
 
-        while (elapsed < shakeDuration)
+        // Zoom in fast
+        while (elapsed < half)
         {
             elapsed += Time.deltaTime;
-            float strength = shakeIntensity * (1f - elapsed / shakeDuration);
-            Vector2 offset = Random.insideUnitCircle * strength;
-            cam.transform.localPosition = originalCamLocalPos + (Vector3)offset;
+            cam.orthographicSize = Mathf.Lerp(originalOrthoSize, zoomedSize, elapsed / half);
             yield return null;
         }
 
-        cam.transform.localPosition = originalCamLocalPos;
+        // Zoom back out smooth
+        elapsed = 0f;
+        float returnTime = zoomPunchDuration - half;
+        while (elapsed < returnTime)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / returnTime;
+            t = 1f - (1f - t) * (1f - t);
+            cam.orthographicSize = Mathf.Lerp(zoomedSize, originalOrthoSize, t);
+            yield return null;
+        }
+
+        cam.orthographicSize = originalOrthoSize;
     }
 
     IEnumerator PulseRoutine()
