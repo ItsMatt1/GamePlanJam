@@ -37,10 +37,11 @@ public class GameManager : MonoBehaviour
         if (isGameOver) return;
 
         isGameOver = true;
-        Time.timeScale = 0f;
 
         if (gameOverPanel != null)
             gameOverPanel.SetActive(true);
+
+        Time.timeScale = 0f;
     }
 
     public void RestartGame()

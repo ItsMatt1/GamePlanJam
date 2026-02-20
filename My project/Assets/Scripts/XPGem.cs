@@ -46,9 +46,14 @@ public class XPGem : MonoBehaviour
 
     void Collect()
     {
-        PlayerHealth health = player.GetComponent<PlayerHealth>();
-        if (health != null)
-            health.Heal(healAmount);
+        // Only heal in Angel form
+        DualitySystem duality = player.GetComponent<DualitySystem>();
+        if (duality == null || duality.currentForm == PlayerForm.Angel)
+        {
+            PlayerHealth health = player.GetComponent<PlayerHealth>();
+            if (health != null)
+                health.Heal(healAmount);
+        }
 
         if (GameManager.Instance != null)
             GameManager.Instance.AddGemScore();
